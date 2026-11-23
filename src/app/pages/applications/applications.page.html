@@ -1,0 +1,99 @@
+<div class="page-header">
+  <div>
+    <h1>Applications</h1>
+    @if (result(); as r) {
+      <p class="subtitle">{{ r.totalCount }} {{ r.totalCount === 1 ? 'application' : 'applications' }}</p>
+    }
+  </div>
+  <a class="btn btn-primary" routerLink="/applications/new">+ New application</a>
+</div>
+
+<div class="card toolbar">
+  <input
+    class="search"
+    type="search"
+    placeholder="Search company, position or location…"
+    [value]="search()"
+    (input)="onSearch($any($event.target).value)"
+  />
+  <select [value]="status() ?? ''" (change)="setStatus($any($event.target).value)" aria-label="Filter by status">
+    <option value="">All statuses</option>
+    @for (s of statuses; track s) {
+      <option [value]="s" [selected]="status() === s">{{ s }}</option>
+    }
+  </select>
+  <select [value]="workMode() ?? ''" (change)="setWorkMode($any($event.target).value)" aria-label="Filter by work mode">
+    <option value="">All work modes</option>
+    @for (m of workModes; track m) {
+      <option [value]="m" [selected]="workMode() === m">{{ m | workModeLabel }}</option>
+    }
+  </select>
+  <select (change)="setSort($any($event.target).value)" aria-label="Sort">
+    <option value="CreatedAt:desc" [selected]="sortBy() === 'CreatedAt' && descending()">Newest first</option>
+    <option value="CreatedAt:asc" [selected]="sortBy() === 'CreatedAt' && !descending()">Oldest first</option>
+    <option value="UpdatedAt:desc" [selected]="sortBy() === 'UpdatedAt' && descending()">Recently updated</option>
+    <option value="AppliedAt:desc" [selected]="sortBy() === 'AppliedAt' && descending()">Recently applied</option>
+    <option value="Company:asc" [selected]="sortBy() === 'Company' && !descending()">Company A–Z</option>
+    <option value="Status:asc" [selected]="sortBy() === 'Status' && !descending()">By status</option>
+  </select>
+  @if (hasFilters()) {
+    <button class="btn btn-sm btn-ghost" type="button" (click)="clearFilters()">Clear</button>
+  }
+</div>
+
+@if (loading()) {
+  <div class="loading">Loading applications…</div>
+} @else if (result(); as r) {
+  @if (r.items.length === 0) {
+    <div class="card empty-state">
+      <div class="empty-icon">📋</div>
+      <h2>{{ hasFilters() ? 'Nothing matches your filters' : 'No applications yet' }}</h2>
+      <p>
+        {{ hasFilters()
+          ? 'Try a different search or clear the filters.'
+          : 'Add your first application and start tracking your search.' }}
+      </p>
+      @if (hasFilters()) {
+        <button class="btn btn-outline" type="button" (click)="clearFilters()">Clear filters</button>
+      } @else {
+        <a class="btn btn-primary" routerLink="/applications/new">+ New application</a>
+      }
+    </div>
+  } @else {
+    <ul class="app-list">
+      @for (app of r.items; track app.id) {
+        <li class="card app-card">
+          <a class="app-link" [routerLink]="['/applications', app.id]">
+            <div class="app-main">
+              <div class="app-title-row">
+                <span class="company">{{ app.companyName }}</span>
+                <app-status-badge [status]="app.status" />
+              </div>
+              <span class="position">{{ app.position }}</span>
+              <div class="app-meta">
+                @if (app.location) {
+                  <span>📍 {{ app.location }}</span>
+                }
+                <span>{{ app.workMode | workModeLabel }}</span>
+                <span>Applied {{ formatDate(app.appliedAtUtc) }}</span>
+              </div>
+            </div>
+            <span class="chevron" aria-hidden="true">›</span>
+          </a>
+        </li>
+      }
+    </ul>
+
+    @if (r.totalPages > 1) {
+      <nav class="pagination" aria-label="Pages">
+        <button class="btn btn-sm btn-outline" type="button" [disabled]="!r.hasPrevious" (click)="goToPage(r.page - 1)">
+          ← Prev
+        </button>
+        <span class="page-info">Page {{ r.page }} of {{ r.totalPages }}</span>
+        <button class="btn btn-sm btn-outline" type="button" [disabled]="!r.hasNext" (click)="goToPage(r.page + 1)">
+          Next →
+        </button>
+      </nav>
+    }
+  }
+}
