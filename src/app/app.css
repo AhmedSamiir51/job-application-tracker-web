@@ -1,0 +1,91 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #0f172a;
+  color: #e2e8f0;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+}
+
+.topbar-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 3.75rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #6366f1, #2563eb);
+  font-size: 0.8125rem;
+}
+
+.nav {
+  display: flex;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nav a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  transition: color 0.15s, background 0.15s;
+}
+
+.nav a:hover { color: #e2e8f0; }
+.nav a.active { color: #fff; background: rgb(255 255 255 / 0.08); }
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.user-name {
+  font-size: 0.875rem;
+  color: #cbd5e1;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar .btn-ghost {
+  color: #cbd5e1;
+  border-color: #334155;
+  background: transparent;
+}
+
+.topbar .btn-ghost:hover { background: rgb(255 255 255 / 0.06); color: #fff; }
+
+main.with-topbar {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+@media (max-width: 40rem) {
+  .user-name { display: none; }
+  .topbar-inner { gap: 1rem; }
+}

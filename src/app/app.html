@@ -1,0 +1,21 @@
+@if (auth.isAuthenticated()) {
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" routerLink="/">
+        <span class="brand-mark">JT</span>
+        <span class="brand-name">JobTracker</span>
+      </a>
+      <nav class="nav">
+        <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/applications" routerLinkActive="active">Applications</a>
+      </nav>
+      <div class="topbar-user">
+        <span class="user-name">{{ auth.user()?.fullName }}</span>
+        <button class="btn btn-ghost" type="button" (click)="signOut()">Sign out</button>
+      </div>
+    </div>
+  </header>
+}
+<main [class.with-topbar]="auth.isAuthenticated()">
+  <router-outlet />
+</main>
