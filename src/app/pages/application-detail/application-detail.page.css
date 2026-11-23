@@ -1,0 +1,112 @@
+.breadcrumb { margin-bottom: 0.75rem; }
+.breadcrumb a { font-size: 0.875rem; color: var(--color-text-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--color-primary); }
+
+.title-row { display: flex; align-items: center; gap: 0.875rem; flex-wrap: wrap; }
+.header-actions { display: flex; gap: 0.625rem; }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 0.5rem;
+}
+
+.detail-main, .detail-side { display: grid; gap: 1.5rem; }
+.panel { padding: 1.5rem; }
+.panel h2 { font-size: 1.0625rem; margin-bottom: 1rem; }
+
+.details-list { display: grid; gap: 0.75rem; margin: 0; }
+.details-list div { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; }
+.details-list dt { font-size: 0.8125rem; color: var(--color-text-muted); font-weight: 500; }
+.details-list dd { margin: 0; font-size: 0.9375rem; }
+
+.muted { color: var(--color-text-muted); font-size: 0.875rem; margin: 0; }
+.error { font-size: 0.8125rem; color: var(--color-danger); }
+
+.note-form { display: grid; gap: 0.5rem; margin-bottom: 1.25rem; }
+.note-form textarea,
+.transition-comment {
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  resize: vertical;
+  width: 100%;
+}
+.note-form textarea:focus,
+.transition-comment:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(79 70 229 / 0.15);
+}
+.note-form-footer { display: flex; justify-content: flex-end; align-items: center; gap: 0.75rem; }
+
+.notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.notes li { background: #f8fafc; border: 1px solid var(--color-border); border-radius: 0.5rem; padding: 0.75rem 1rem; }
+.notes p { margin: 0 0 0.25rem; font-size: 0.9375rem; white-space: pre-wrap; }
+.note-date { font-size: 0.75rem; color: var(--color-text-muted); }
+
+.transition-hint { margin-bottom: 0.625rem; }
+.transition-comment { margin-bottom: 0.75rem; }
+.transitions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+.transition-btn { background: #eef2ff; color: #4338ca; border: 1px solid #e0e7ff; }
+.transition-btn:hover:not(:disabled) { background: #e0e7ff; }
+.transition-btn[data-status='Rejected'],
+.transition-btn[data-status='Withdrawn'] { background: #f8fafc; color: #64748b; border-color: var(--color-border); }
+.transition-btn[data-status='Rejected']:hover:not(:disabled),
+.transition-btn[data-status='Withdrawn']:hover:not(:disabled) { background: #f1f5f9; }
+
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.timeline li { display: flex; gap: 0.75rem; padding-bottom: 1.125rem; position: relative; }
+.timeline li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 0.3125rem;
+  top: 1rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+.timeline-dot {
+  flex-shrink: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-top: 0.3125rem;
+  border-radius: 999px;
+  background: #94a3b8;
+  position: relative;
+  z-index: 1;
+}
+.timeline-dot[data-status='Applied'] { background: #3b82f6; }
+.timeline-dot[data-status='PhoneScreen'] { background: #6366f1; }
+.timeline-dot[data-status='Interview'] { background: #f59e0b; }
+.timeline-dot[data-status='Offer'] { background: #10b981; }
+.timeline-dot[data-status='Accepted'] { background: #22c55e; }
+.timeline-dot[data-status='Rejected'] { background: #ef4444; }
+.timeline-body { display: grid; gap: 0.125rem; min-width: 0; }
+.timeline-title { font-size: 0.875rem; font-weight: 600; }
+.timeline-comment { margin: 0; font-size: 0.8125rem; color: #475569; }
+.timeline-date { font-size: 0.75rem; color: var(--color-text-muted); }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(15 23 42 / 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  padding: 1rem;
+}
+.modal { max-width: 26rem; padding: 1.75rem; }
+.modal h2 { font-size: 1.25rem; margin-bottom: 0.625rem; }
+.modal p { color: var(--color-text-muted); font-size: 0.9375rem; margin: 0 0 1.5rem; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.625rem; }
+.btn-danger-solid { background: var(--color-danger); color: #fff; }
+.btn-danger-solid:hover:not(:disabled) { background: #b91c1c; }
+
+@media (max-width: 56rem) {
+  .detail-grid { grid-template-columns: 1fr; }
+}

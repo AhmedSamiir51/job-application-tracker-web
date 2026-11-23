@@ -1,0 +1,154 @@
+@if (loading()) {
+  <div class="loading">Loading application…</div>
+} @else if (notFound()) {
+  <div class="card empty-state">
+    <h2>Application not found</h2>
+    <p>It may have been deleted.</p>
+    <a class="btn btn-outline" routerLink="/applications">Back to applications</a>
+  </div>
+} @else if (app(); as a) {
+  <nav class="breadcrumb">
+    <a routerLink="/applications">← Applications</a>
+  </nav>
+
+  <div class="page-header">
+    <div>
+      <div class="title-row">
+        <h1>{{ a.companyName }}</h1>
+        <app-status-badge [status]="a.status" />
+      </div>
+      <p class="subtitle">{{ a.position }}</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn btn-outline" [routerLink]="['/applications', a.id, 'edit']">Edit</a>
+      <button class="btn btn-danger" type="button" (click)="confirmingDelete.set(true)">Delete</button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error" role="alert">{{ error() }}</div>
+  }
+
+  <div class="detail-grid">
+    <div class="detail-main">
+      <section class="card panel">
+        <h2>Details</h2>
+        <dl class="details-list">
+          @if (a.location) {
+            <div><dt>Location</dt><dd>{{ a.location }}</dd></div>
+          }
+          <div><dt>Work mode</dt><dd>{{ a.workMode | workModeLabel }}</dd></div>
+          @if (salary()) {
+            <div><dt>Salary</dt><dd>{{ salary() }}</dd></div>
+          }
+          <div><dt>Applied</dt><dd>{{ formatDate(a.appliedAtUtc) }}</dd></div>
+          <div><dt>Added</dt><dd>{{ formatDate(a.createdAtUtc) }}</dd></div>
+          @if (a.jobUrl) {
+            <div>
+              <dt>Job posting</dt>
+              <dd><a [href]="a.jobUrl" target="_blank" rel="noopener noreferrer">View posting ↗</a></dd>
+            </div>
+          }
+        </dl>
+      </section>
+
+      <section class="card panel">
+        <h2>Notes</h2>
+        <form [formGroup]="noteForm" (ngSubmit)="addNote()" class="note-form">
+          <textarea
+            formControlName="text"
+            rows="2"
+            placeholder="Add a note — a recruiter call, a follow-up reminder…"
+          ></textarea>
+          <div class="note-form-footer">
+            @if (noteError()) {
+              <span class="error">{{ noteError() }}</span>
+            }
+            <button class="btn btn-sm btn-primary" type="submit" [disabled]="notePending()">
+              {{ notePending() ? 'Adding…' : 'Add note' }}
+            </button>
+          </div>
+        </form>
+        @if (a.notes.length === 0) {
+          <p class="muted">No notes yet.</p>
+        } @else {
+          <ul class="notes">
+            @for (note of a.notes; track note.id) {
+              <li>
+                <p>{{ note.text }}</p>
+                <span class="note-date">{{ formatDateTime(note.createdAtUtc) }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    </div>
+
+    <div class="detail-side">
+      <section class="card panel">
+        <h2>Move status</h2>
+        @if (a.allowedTransitions.length === 0) {
+          <p class="muted">This application is closed. No further moves available.</p>
+        } @else {
+          <p class="muted transition-hint">Pick the next step, optionally with a comment.</p>
+          <textarea #comment rows="2" class="transition-comment" placeholder="Comment (optional)"></textarea>
+          <div class="transitions">
+            @for (next of a.allowedTransitions; track next) {
+              <button
+                class="btn btn-sm transition-btn"
+                type="button"
+                [attr.data-status]="next"
+                [disabled]="pendingTransition() !== null"
+                (click)="changeStatus(next, comment)"
+              >
+                {{ pendingTransition() === next ? 'Moving…' : (next | statusLabel) }}
+              </button>
+            }
+          </div>
+          @if (transitionError()) {
+            <div class="alert alert-error" role="alert">{{ transitionError() }}</div>
+          }
+        }
+      </section>
+
+      <section class="card panel">
+        <h2>History</h2>
+        <ol class="timeline">
+          @for (event of a.history; track event.changedAtUtc) {
+            <li>
+              <span class="timeline-dot" [attr.data-status]="event.to"></span>
+              <div class="timeline-body">
+                <div class="timeline-title">
+                  @if (event.from) {
+                    {{ event.from | statusLabel }} → {{ event.to | statusLabel }}
+                  } @else {
+                    Added as {{ event.to | statusLabel }}
+                  }
+                </div>
+                @if (event.comment) {
+                  <p class="timeline-comment">{{ event.comment }}</p>
+                }
+                <span class="timeline-date">{{ formatDateTime(event.changedAtUtc) }}</span>
+              </div>
+            </li>
+          }
+        </ol>
+      </section>
+    </div>
+  </div>
+
+  @if (confirmingDelete()) {
+    <div class="modal-backdrop" (click)="confirmingDelete.set(false)">
+      <div class="modal card" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+        <h2>Delete this application?</h2>
+        <p>{{ a.companyName }} — {{ a.position }} will be permanently removed, including its notes and history.</p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" type="button" (click)="confirmingDelete.set(false)">Cancel</button>
+          <button class="btn btn-danger-solid" type="button" [disabled]="deleting()" (click)="delete()">
+            {{ deleting() ? 'Deleting…' : 'Delete' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+}
