@@ -1,0 +1,77 @@
+<div class="page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="subtitle">How your job search is going, at a glance.</p>
+  </div>
+  <a class="btn btn-primary" routerLink="/applications/new">+ New application</a>
+</div>
+
+@if (loading()) {
+  <div class="loading">Loading your dashboard…</div>
+} @else if (stats(); as s) {
+  <section class="stats-grid">
+    <div class="card stat">
+      <span class="stat-value">{{ s.total }}</span>
+      <span class="stat-label">Total applications</span>
+    </div>
+    <div class="card stat">
+      <span class="stat-value accent-blue">{{ s.active }}</span>
+      <span class="stat-label">In progress</span>
+    </div>
+    <div class="card stat">
+      <span class="stat-value accent-green">{{ s.offers }}</span>
+      <span class="stat-label">Offers</span>
+    </div>
+    <div class="card stat">
+      <span class="stat-value accent-purple">{{ percent(s.responseRate) }}</span>
+      <span class="stat-label">Response rate</span>
+    </div>
+  </section>
+
+  <div class="dashboard-grid">
+    <section class="card panel">
+      <h2>Pipeline</h2>
+      <div class="pipeline">
+        @for (row of pipeline(); track row.status) {
+          <a class="pipeline-row" [routerLink]="['/applications']" [queryParams]="{ status: row.status }">
+            <span class="pipeline-label">{{ row.status | statusLabel }}</span>
+            <span class="pipeline-bar-track">
+              <span class="pipeline-bar" [attr.data-status]="row.status" [style.width.%]="row.share * 100"></span>
+            </span>
+            <span class="pipeline-count">{{ row.count }}</span>
+          </a>
+        }
+      </div>
+    </section>
+
+    <section class="card panel">
+      <div class="panel-header">
+        <h2>Recent activity</h2>
+        <a class="btn btn-sm btn-outline" routerLink="/applications">View all</a>
+      </div>
+      @if (recent().length === 0) {
+        <div class="empty">
+          <p>No applications yet.</p>
+          <a class="btn btn-primary btn-sm" routerLink="/applications/new">Add your first application</a>
+        </div>
+      } @else {
+        <ul class="recent-list">
+          @for (app of recent(); track app.id) {
+            <li>
+              <a class="recent-row" [routerLink]="['/applications', app.id]">
+                <span class="recent-main">
+                  <span class="recent-company">{{ app.companyName }}</span>
+                  <span class="recent-position">{{ app.position }}</span>
+                </span>
+                <span class="recent-side">
+                  <app-status-badge [status]="app.status" />
+                  <span class="recent-date">{{ formatDate(app.updatedAtUtc) }}</span>
+                </span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+}
