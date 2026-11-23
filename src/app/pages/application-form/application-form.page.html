@@ -1,0 +1,113 @@
+<nav class="breadcrumb">
+  <a [routerLink]="isEdit ? ['/applications', id] : ['/applications']">← Back</a>
+</nav>
+
+<div class="page-header">
+  <div>
+    <h1>{{ isEdit ? 'Edit application' : 'New application' }}</h1>
+    <p class="subtitle">{{ isEdit ? 'Update the details of this application.' : 'Track a new opportunity.' }}</p>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="loading">Loading…</div>
+} @else {
+  <form class="card form-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (error()) {
+      <div class="alert alert-error" role="alert">{{ error() }}</div>
+    }
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="companyName">Company *</label>
+        <input id="companyName" type="text" formControlName="companyName" placeholder="Microsoft"
+               [class.invalid]="invalid('companyName')" />
+        @if (serverError('companyname')) {
+          <span class="error">{{ serverError('companyname') }}</span>
+        } @else if (invalid('companyName')) {
+          <span class="error">Company is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="position">Position *</label>
+        <input id="position" type="text" formControlName="position" placeholder="Senior Backend Engineer"
+               [class.invalid]="invalid('position')" />
+        @if (serverError('position')) {
+          <span class="error">{{ serverError('position') }}</span>
+        } @else if (invalid('position')) {
+          <span class="error">Position is required.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="workMode">Work mode</label>
+        <select id="workMode" formControlName="workMode">
+          @for (m of workModes; track m) {
+            <option [value]="m">{{ m === 'Onsite' ? 'On-site' : m }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="location">Location</label>
+        <input id="location" type="text" formControlName="location" placeholder="Alexandria, Egypt" />
+      </div>
+
+      <div class="field span-2">
+        <label for="jobUrl">Job posting URL</label>
+        <input id="jobUrl" type="url" formControlName="jobUrl" placeholder="https://…"
+               [class.invalid]="invalid('jobUrl')" />
+        @if (serverError('joburl')) {
+          <span class="error">{{ serverError('joburl') }}</span>
+        } @else if (invalid('jobUrl')) {
+          <span class="error">Enter a valid http(s) URL.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="salaryMin">Salary min</label>
+        <input id="salaryMin" type="number" min="0" formControlName="salaryMin" placeholder="30000" />
+      </div>
+
+      <div class="field">
+        <label for="salaryMax">Salary max</label>
+        <input id="salaryMax" type="number" min="0" formControlName="salaryMax" placeholder="45000"
+               [class.invalid]="form.touched && form.hasError('salaryRange')" />
+        @if (serverError('salarymax')) {
+          <span class="error">{{ serverError('salarymax') }}</span>
+        } @else if (form.touched && form.hasError('salaryRange')) {
+          <span class="error">Max salary must be greater than or equal to min salary.</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="currency">Currency</label>
+        <input id="currency" type="text" formControlName="currency" placeholder="EGP" maxlength="3"
+               [class.invalid]="invalid('currency')" />
+        @if (serverError('currency')) {
+          <span class="error">{{ serverError('currency') }}</span>
+        } @else if (invalid('currency')) {
+          <span class="error">A 3-letter ISO code, e.g. EGP or USD.</span>
+        }
+      </div>
+
+      @if (!isEdit) {
+        <div class="field">
+          <label for="status">Stage</label>
+          <select id="status" formControlName="status">
+            <option value="Wishlist">Wishlist — saving for later</option>
+            <option value="Applied">Applied — already submitted</option>
+          </select>
+        </div>
+      }
+    </div>
+
+    <div class="form-actions">
+      <a class="btn btn-outline" [routerLink]="isEdit ? ['/applications', id] : ['/applications']">Cancel</a>
+      <button class="btn btn-primary" type="submit" [disabled]="pending()">
+        {{ pending() ? 'Saving…' : isEdit ? 'Save changes' : 'Add application' }}
+      </button>
+    </div>
+  </form>
+}
