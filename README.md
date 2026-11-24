@@ -2,6 +2,8 @@
 
 Angular frontend for the [Job Application Tracker API](https://github.com/AhmedSamiir51/job-application-tracker-api). Track every job application from wishlist to offer: pipeline view, status history, notes and search-wide stats.
 
+**Live demo:** https://job-application-tracker-web-ecru.vercel.app
+
 ## Stack
 
 - **Angular 22** — standalone components, signals, lazy-loaded routes, the new `@if` / `@for` template syntax
@@ -63,4 +65,4 @@ npm run build      # outputs to dist/job-application-tracker-web/browser
 
 ## Deployment
 
-Deployed on [Vercel](https://vercel.com). `vercel.json` adds the SPA rewrite so deep links (`/applications/…`) resolve to `index.html`.
+Deployed on [Vercel](https://vercel.com) at https://job-application-tracker-web-ecru.vercel.app. `vercel.json` adds the SPA rewrite so deep links (`/applications/…`) resolve to `index.html`. Every push to `main` redeploys automatically.
