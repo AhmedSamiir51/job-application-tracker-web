@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  // Live API base URL (no trailing slash). Set at deploy time.
-  apiUrl: 'https://job-application-tracker-api.onrender.com',
+  // Live API base URL (no trailing slash).
+  apiUrl: 'https://job-application-tracker-api-a4804.containers.snapdeploy.app',
 };
